@@ -1,8 +1,9 @@
 const User = require("../Models/UserModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Role = require("../Models/RoleModel");
 
-//endpoint creation de compte
+//endpoint creation de compte et insertion du role dans la table role
 const signup = async(req, res) => {
     const { firstname, lastname, email, password, role } = req.body;
     try {
@@ -12,6 +13,10 @@ const signup = async(req, res) => {
             email: email,
             password: await bcrypt.hash(password, 10),
             role: role,
+        }  
+        );
+        await Role.create({
+            name: role
         });
         return res.status(200).send({message: "User register with success"});
     } catch (error) {
@@ -43,7 +48,7 @@ const sigin = async(req, res) => {
     }
 };
 
-//endpoint afficher un utilisateur à l'ai du mail
+//endpoint afficher un utilisateur à l'aide du mail
 const ReadOne = async(req, res) => {
     const user = await User.findOne({
         where: {
