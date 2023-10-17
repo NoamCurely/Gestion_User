@@ -1,8 +1,11 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../Config/Database");
+const Role = require("./RoleModel");
 
-const User = sequelize.define('user', {
-    id: {
+class User extends Model {}
+
+User.init({
+    id_user: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         allowNull: false,
@@ -30,7 +33,20 @@ const User = sequelize.define('user', {
         type: DataTypes.STRING,
         allowNull: false
     }
-}, {});
+},  {
+        sequelize: sequelize,
+        modelName: "user",
+        freezeTableName: true,
+        timestamps: false,
+        initialAutoIncrement: 0
+    }
+);
+
+User.associate = function() {
+    User.belongsTo(Role, { foreignKey: "id_user" });
+};
+
+// console.log(User.belongsTo(Role));
 
 sequelize.sync().then(() => {
     console.log('User table created successfully!');
